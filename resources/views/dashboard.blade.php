@@ -29,6 +29,25 @@
             <i class="ph ph-magnifying-glass position-absolute searchInput-icon"></i>
         </div>
     </form>
+
+    <div class="pets-list mt-4">
+        <h4>Available Pets</h4>
+        <ul class="list-group" id="petList">
+            @foreach($pets as $pet)
+                <li class="list-group-item pet-list-item" data-pet-name="{{ strtolower($pet['name']) }}">
+                    <a href="{{ route('pet.overview', ['id' => $pet['id']]) }}" class="btn btn-link text-decoration-none text-dark p-0">
+                        <h5>{{ $pet['name'] }} - 
+                            <span class="pet-type" style="font-weight: lighter; font-size: 0.9em;">
+                                {{ $pet['pet_type'] }}
+                            </span>
+                        </h5>
+                    </a>
+                </li>
+            @endforeach
+        </ul>
+    </div>
+    
+    
 @endsection
 
 @push('scripts')
@@ -50,6 +69,23 @@
 
             const randomTitle = titles[Math.floor(Math.random() * titles.length)];
             document.getElementById('typewriterText').textContent = randomTitle;
+
+            const searchInput = document.getElementById('searchInput');
+            const petListItems = document.querySelectorAll('.pet-list-item');
+
+            searchInput.addEventListener('input', function() {
+                const searchTerm = searchInput.value.toLowerCase();
+
+                petListItems.forEach(function(item) {
+                    const petName = item.getAttribute('data-pet-name');
+                    
+                    if (petName.includes(searchTerm)) {
+                        item.style.display = 'block';
+                    } else {
+                        item.style.display = 'none';
+                    }
+                });
+            });
         });
     </script>
 @endpush
